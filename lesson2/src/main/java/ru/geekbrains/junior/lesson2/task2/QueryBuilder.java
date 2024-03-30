@@ -130,10 +130,9 @@ public class QueryBuilder {
     /**
      * Delete Query
      *
-     * @return
      */
     public String buildDeleteQuery(Class<?> clazz, UUID primaryKey){
-//        DELETE * FROM Table WHERE id = 1
+//        DELETE * FROM Table WHERE id = 'primaryKey'
         if(clazz.isAnnotationPresent(Table.class)){
             Table tableAnnotation = clazz.getAnnotation(Table.class);
             StringBuilder query = new StringBuilder("DELETE FROM ");
