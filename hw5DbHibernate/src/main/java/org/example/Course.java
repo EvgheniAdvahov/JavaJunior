@@ -27,8 +27,31 @@ public class Course {
         this.duration = duration;
     }
 
+    public Course() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     public static Course create(){
         return new Course(courses[random.nextInt(courses.length)], random.nextInt(30, 60));
     }
 
+    public void updateTitle(String title) {
+        this.title = courses[random.nextInt(courses.length)];
+    }
+
+    public void updateDuration(int duration) {
+        this.duration = random.nextInt(30, 60);
+    }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", duration=" + duration +
+                '}';
+    }
 }
