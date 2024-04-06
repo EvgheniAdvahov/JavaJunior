@@ -30,19 +30,19 @@ public class Course {
     public Course() {
     }
 
+    public static Course create() {
+        return new Course(courses[random.nextInt(courses.length)], random.nextInt(30, 60));
+    }
+
     public Long getId() {
         return id;
     }
 
-    public static Course create(){
-        return new Course(courses[random.nextInt(courses.length)], random.nextInt(30, 60));
-    }
-
-    public void updateTitle(String title) {
+    public void updateTitle() {
         this.title = courses[random.nextInt(courses.length)];
     }
 
-    public void updateDuration(int duration) {
+    public void updateDuration() {
         this.duration = random.nextInt(30, 60);
     }
 
