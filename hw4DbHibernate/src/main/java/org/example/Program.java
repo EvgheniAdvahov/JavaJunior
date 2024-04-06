@@ -61,7 +61,7 @@ public class Program {
             System.out.println("Такого id не существует");
 
             session.getTransaction().commit();
-            System.out.println("Transaction commit successfully");
+            System.out.println("Transaction delete successfully");
         }
     }
 
@@ -86,7 +86,7 @@ public class Program {
             System.out.println("Такого id не существует");
 
             session.getTransaction().commit();
-            System.out.println("Transaction commit successfully");
+            System.out.println("Transaction update successfully");
         }
     }
 
@@ -102,7 +102,7 @@ public class Program {
             }
 
             session.getTransaction().commit();
-            System.out.println("Transaction commit successfully");
+            System.out.println("Transaction getAll successfully");
         }
 
     }
@@ -119,7 +119,7 @@ public class Program {
             System.out.println("Object course is saved");
 
             session.getTransaction().commit();
-            System.out.println("Transaction commit successfully");
+            System.out.println("Transaction add successfully");
         }
     }
 }
