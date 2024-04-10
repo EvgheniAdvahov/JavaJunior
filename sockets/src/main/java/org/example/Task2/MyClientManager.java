@@ -41,13 +41,16 @@ public class MyClientManager implements Runnable {
         }
     }
 
-    private void broadcastMessage(String messageToSend) {
+    private synchronized void broadcastMessage(String messageToSend) {
         for (MyClientManager client : clients) {
             try {
+                // Определяем получателя сообщения
+                String recipient = extractRecipient(messageToSend);
+                // Если сообщение не адресовано конкретному клиенту, отправляем его всем кроме отправителя
                 if (!client.name.equals(name)) {
-                    client.bufferedWriter.write(messageToSend);
-                    client.bufferedWriter.newLine();
-                    client.bufferedWriter.flush();
+                        client.bufferedWriter.write(messageToSend + recipient);
+                        client.bufferedWriter.newLine();
+                        client.bufferedWriter.flush();
                 }
             } catch (IOException e) {
                 closeEverything(socket, bufferedReader, bufferedWriter);
@@ -55,6 +58,18 @@ public class MyClientManager implements Runnable {
         }
     }
 
+    // Метод для извлечения имени клиента из сообщения
+    private synchronized String extractRecipient(String message) {
+        if (message.startsWith("@")) {
+            int indexOfSpace = message.indexOf(" ");
+            if (indexOfSpace != -1) {
+                return message.substring(1, indexOfSpace);
+            } else {
+                return message.substring(1);
+            }
+        }
+        return null;
+    }
     private void closeEverything(Socket socket, BufferedReader bufferedReader,
                                  BufferedWriter bufferedWriter) {
         removeClient();
