@@ -1,55 +1,60 @@
-package org.example;
+package org.example.Task2;
+
 
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class ClientManager implements Runnable{
+public class MyClientManager implements Runnable {
+
+    public static ArrayList<MyClientManager> clients = new ArrayList<>();
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
     private String name;
-    public static ArrayList<ClientManager> clients = new ArrayList<>();
-    public ClientManager(Socket socket) {
+
+    public MyClientManager(Socket socket) {
         try {
             this.socket = socket;
             bufferedWriter = new BufferedWriter(new
                     OutputStreamWriter(socket.getOutputStream()));
-            bufferedReader = new BufferedReader(new
-                    InputStreamReader(socket.getInputStream()));
+            bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             name = bufferedReader.readLine();
             clients.add(this);
-            broadcastMessage("Server: "+name+" подключился к чату.");
+            broadcastMessage("Server: " + name + " подключился к чату");
         } catch (IOException e) {
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
     }
+
     @Override
     public void run() {
-        String massageFromClient;
-        while (socket.isConnected()){
+        String messageFromClient;
+        while (socket.isConnected()) {
             try {
-                massageFromClient = bufferedReader.readLine();
-                broadcastMessage(massageFromClient);
-            } catch (IOException e){
+                messageFromClient = bufferedReader.readLine();
+                broadcastMessage(messageFromClient);
+            } catch (IOException e) {
                 closeEverything(socket, bufferedReader, bufferedWriter);
                 break;
             }
         }
     }
-    private void broadcastMessage(String massageToSend) {
-        for (ClientManager client: clients) {
+
+    private void broadcastMessage(String messageToSend) {
+        for (MyClientManager client : clients) {
             try {
                 if (!client.name.equals(name)) {
-                    client.bufferedWriter.write(massageToSend);
+                    client.bufferedWriter.write(messageToSend);
                     client.bufferedWriter.newLine();
                     client.bufferedWriter.flush();
                 }
-            } catch (IOException e){
+            } catch (IOException e) {
                 closeEverything(socket, bufferedReader, bufferedWriter);
             }
         }
     }
+
     private void closeEverything(Socket socket, BufferedReader bufferedReader,
                                  BufferedWriter bufferedWriter) {
         removeClient();
@@ -63,12 +68,15 @@ public class ClientManager implements Runnable{
             if (socket != null) {
                 socket.close();
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public void removeClient(){
+
+    private void removeClient() {
         clients.remove(this);
-        broadcastMessage("SERVER: "+name+" покинул чат.");
+        broadcastMessage("SERVER: " + name + "покинул чат.");
     }
+
+
 }
