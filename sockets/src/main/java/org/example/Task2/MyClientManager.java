@@ -41,16 +41,23 @@ public class MyClientManager implements Runnable {
         }
     }
 
-    private synchronized void broadcastMessage(String messageToSend) {
+    private void broadcastMessage(String messageToSend) {
         for (MyClientManager client : clients) {
             try {
                 // Определяем получателя сообщения
                 String recipient = extractRecipient(messageToSend);
+
+                // Если сообщение начинается с символа "@" и клиент является получателем
+                if (recipient != null && recipient.equals(client.name)) {
+                    client.bufferedWriter.write(messageToSend);
+                    client.bufferedWriter.newLine();
+                    client.bufferedWriter.flush();
+                }
                 // Если сообщение не адресовано конкретному клиенту, отправляем его всем кроме отправителя
-                if (!client.name.equals(name)) {
-                        client.bufferedWriter.write(messageToSend + recipient);
-                        client.bufferedWriter.newLine();
-                        client.bufferedWriter.flush();
+                else if (recipient == null && !client.name.equals(name)) {
+                    client.bufferedWriter.write(messageToSend);
+                    client.bufferedWriter.newLine();
+                    client.bufferedWriter.flush();
                 }
             } catch (IOException e) {
                 closeEverything(socket, bufferedReader, bufferedWriter);
@@ -59,17 +66,22 @@ public class MyClientManager implements Runnable {
     }
 
     // Метод для извлечения имени клиента из сообщения
-    private synchronized String extractRecipient(String message) {
-        if (message.startsWith("@")) {
-            int indexOfSpace = message.indexOf(" ");
-            if (indexOfSpace != -1) {
-                return message.substring(1, indexOfSpace);
-            } else {
-                return message.substring(1);
+    private String extractRecipient(String message) {
+        int colonIndex = message.indexOf(":");
+        if (colonIndex != -1) {
+            String recipientPart = message.substring(colonIndex + 1).trim(); // Получаем часть строки после ":"
+            if (recipientPart.startsWith("@")) {
+                int indexOfSpace = recipientPart.indexOf(" "); // Ищем индекс пробела
+                if (indexOfSpace != -1) {
+                    return recipientPart.substring(1, indexOfSpace); // Возвращаем часть после "@", до пробела
+                } else {
+                    return recipientPart.substring(1); // Возвращаем часть после "@"
+                }
             }
         }
         return null;
     }
+
     private void closeEverything(Socket socket, BufferedReader bufferedReader,
                                  BufferedWriter bufferedWriter) {
         removeClient();
