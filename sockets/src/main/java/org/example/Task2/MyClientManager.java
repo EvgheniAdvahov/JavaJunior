@@ -55,6 +55,7 @@ public class MyClientManager implements Runnable {
                 }
                 // Если сообщение не адресовано конкретному клиенту, отправляем его всем кроме отправителя
                 else if (recipient == null && !client.name.equals(name)) {
+                    // messageToSend = messageToSend.replaceFirst(" @" + recipient, "");
                     client.bufferedWriter.write(messageToSend);
                     client.bufferedWriter.newLine();
                     client.bufferedWriter.flush();
