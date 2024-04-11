@@ -18,9 +18,9 @@ public class MyServer {
         try {
             while (!serverSocket.isClosed()) {
                 Socket socket = serverSocket.accept();
-                System.out.println("Подключён новый клиент!");
                 MyClientManager client = new MyClientManager(socket);
                 Thread thread = new Thread(client);
+                System.out.println("Подключён новый клиент! : " + client.getName());
                 thread.start();
             }
         } catch (IOException e) {

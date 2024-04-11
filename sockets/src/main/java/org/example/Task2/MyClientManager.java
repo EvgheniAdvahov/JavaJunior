@@ -49,13 +49,14 @@ public class MyClientManager implements Runnable {
 
                 // Если сообщение начинается с символа "@" и клиент является получателем
                 if (recipient != null && recipient.equals(client.name)) {
-                    client.bufferedWriter.write(messageToSend);
+                    String newMessage;
+                    newMessage = messageToSend.replaceFirst(" @"+ recipient,"");
+                    client.bufferedWriter.write(newMessage);
                     client.bufferedWriter.newLine();
                     client.bufferedWriter.flush();
                 }
                 // Если сообщение не адресовано конкретному клиенту, отправляем его всем кроме отправителя
                 else if (recipient == null && !client.name.equals(name)) {
-                    // messageToSend = messageToSend.replaceFirst(" @" + recipient, "");
                     client.bufferedWriter.write(messageToSend);
                     client.bufferedWriter.newLine();
                     client.bufferedWriter.flush();
@@ -106,5 +107,7 @@ public class MyClientManager implements Runnable {
         broadcastMessage("SERVER: " + name + "покинул чат.");
     }
 
-
+    public String getName() {
+        return name;
+    }
 }

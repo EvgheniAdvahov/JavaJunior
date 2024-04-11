@@ -78,7 +78,7 @@ public class MyClient {
 
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Введите своё имя: ");
+        System.out.print("Введите своё имя: ");
         String name = scanner.nextLine();
         Socket socket = new Socket("localhost", 1300);
         MyClient client = new MyClient(socket, name);
